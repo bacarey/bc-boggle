@@ -1,0 +1,20 @@
+{
+  "source": {
+    "include": [
+      ".",
+      "README.md",
+      "package.json"
+    ],
+    "includePattern": ".js$",
+    "excludePattern": "(node_modules|docs)"
+  },
+  "tags": {
+    "dictionaries": [
+      "jsdoc"
+    ]
+  },
+  "opts": {
+    "destination": "./docs/",
+    "recurse": true
+  }
+}

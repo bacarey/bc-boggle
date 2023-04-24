@@ -1,0 +1,35 @@
+{
+  "extends": [
+    "airbnb-base",
+    "plugin:jsdoc/recommended",
+    "plugin:vue/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": [
+      "off"
+    ],
+    "no-underscore-dangle": "off",
+    "no-use-before-define": "off",
+    "linebreak-style": "off",
+    "func-style": "off",
+    "no-plusplus": "off",
+    "no-else-return": "off",
+    "one-var": "off",
+    "import/no-dynamic-require": "off",
+    "max-len": "off",
+    "require-await": "error"
+  },
+  "env": {
+    "jest": true
+  },
+  "plugins": [
+    "jsdoc"
+  ],
+  "ignorePatterns": [
+    "docs/"
+  ]
+}
