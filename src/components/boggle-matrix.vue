@@ -2,7 +2,7 @@
   <v-container
     ref="outerContainer"
     fill-height
-    class="bg-blue-grey"
+    class="bg-primary elevation-8 rounded"
   >
     <v-row class="justify-center align-center">
       <v-col

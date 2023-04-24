@@ -1,6 +1,6 @@
 {
   "name": "bc-boggle",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Generates and solves Boggle matrices",
   "main": "server/example.js",
   "author": "Brent Carey",

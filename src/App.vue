@@ -1,21 +1,23 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar flat>
+    <v-app-bar elevation="4" class="bg-amber-lighten-4">
       <v-container class="fill-height d-flex align-center">
-        <v-avatar
-          class="me-10 ms-4"
-          color="grey-darken-1"
-          size="32"
-        />
+<!--        <v-avatar-->
+<!--          class="me-10 ms-4"-->
+<!--          color="grey-darken-1"-->
+<!--          size="32"-->
+<!--        />-->
 
         <v-btn
-          variant="text"
+          variant="flat"
+          class="mx-2"
           @click="shake"
         >
           Random Matrix
         </v-btn>
         <v-btn
-          variant="text"
+          variant="flat"
+          class="mx-2"
           @click="solve"
         >
           Solve
@@ -25,7 +27,7 @@
       </v-container>
     </v-app-bar>
 
-    <v-main class="bg-grey-lighten-3">
+    <v-main class="bg-amber-lighten-5 mt-4">
       <v-container>
         <v-row>
           <v-col>
@@ -56,8 +58,10 @@
               <v-list
                 v-else
                 rounded="lg"
+                elevation="4"
+                style="max-height: 75vh;"
               >
-                <v-list-subheader>Solutions</v-list-subheader>
+                <v-list-subheader class="bg-grey-lighten-3">Solutions</v-list-subheader>
                 <v-list-item
                   v-for="word in boggle.solutions"
                   :key="word"
