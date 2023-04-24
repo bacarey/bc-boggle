@@ -21,7 +21,7 @@ Everything else is just a hastily thrown-together client/server to satisfy the w
 requirement of the submission request.
 
 The frontend is a really rough Vue SPA.  The backend is a pretty basic Express server that
-just provides two REST endpoints:
+provides two REST endpoints:
 * GET /api/boggle/matrix
 * POST /api/boggle/solve (takes a valid matrix in the POST request)
 
@@ -140,7 +140,7 @@ a browser, and you'll get the technical documentation.
 ## TODO
 There is virtually no error handling.  I like to introduce error handling concurrent with
 test writing.  By the time I finished writing tests and building out the client/server, I was already
-into this a few hours.  So, I figured I would let the go.  Honestly, at this stage, I would rather see uncaught errors as they happen anyway.
+into this a few hours.  So, I figured I would let that go.  Honestly, at this stage, I would rather see uncaught errors as they happen anyway.
 
 Also, there is an optimization issue that bugs me.  Currently, the logic starts at each cell
 in the matrix and traces all possible chains of adjacent letters.  But, let's say the first 

@@ -1,6 +1,10 @@
 {
   "name": "bc-boggle",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Generates and solves Boggle matrices",
+  "main": "server/example.js",
+  "author": "Brent Carey",
+  "license": "MIT",
   "scripts": {
     "start-all-dev": "concurrently \"npm run backend\" \"npm run dev\"",
     "backend": "node ./server/server.js",
