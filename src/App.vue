@@ -8,10 +8,16 @@
           size="32"
         />
 
-        <v-btn variant="text" @click="shake">
+        <v-btn
+          variant="text"
+          @click="shake"
+        >
           Random Matrix
         </v-btn>
-        <v-btn variant="text" @click="solve">
+        <v-btn
+          variant="text"
+          @click="solve"
+        >
           Solve
         </v-btn>
 
@@ -33,15 +39,24 @@
 
           <v-col>
             <v-sheet rounded="lg">
-              <v-sheet v-if="boggle.solving" class="pa-4">
-                <v-label class="mr-8">Solving ...</v-label>
+              <v-sheet
+                v-if="boggle.solving"
+                class="pa-4"
+              >
+                <v-label class="mr-8">
+                  Solving ...
+                </v-label>
                 <v-progress-circular
                   v-if="boggle.solving"
                   indeterminate
-                  color="primary" />
+                  color="primary"
+                />
               </v-sheet>
 
-              <v-list rounded="lg" v-else>
+              <v-list
+                v-else
+                rounded="lg"
+              >
                 <v-list-subheader>Solutions</v-list-subheader>
                 <v-list-item
                   v-for="word in boggle.solutions"
