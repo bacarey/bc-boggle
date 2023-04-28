@@ -18,11 +18,40 @@ const MATRIX_MAX = {
   COLUMNS: 4,
 };
 
+const minWordLength = 3;
+
 /**
  * A small utility function to return a random capital letter.
  * @returns {string} a random capital letter
  */
 const randomCapLetter = () => String.fromCharCode(Math.floor(Math.random() * (ASCII_RANGE.TO - ASCII_RANGE.FROM + 1)) + ASCII_RANGE.FROM);
+
+const cubeDefinitions = [
+  ['A', 'A', 'E', 'E', 'G', 'N'],
+  ['A', 'B', 'B', 'J', 'O', 'O'],
+  ['A', 'C', 'H', 'O', 'P', 'S'],
+  ['A', 'F', 'F', 'K', 'P', 'S'],
+  ['A', 'O', 'O', 'T', 'T', 'W'],
+  ['C', 'I', 'M', 'O', 'T', 'U'],
+  ['D', 'E', 'I', 'L', 'R', 'X'],
+  ['D', 'E', 'L', 'R', 'V', 'Y'],
+  ['D', 'I', 'S', 'T', 'T', 'Y'],
+  ['E', 'E', 'G', 'H', 'N', 'W'],
+  ['E', 'E', 'I', 'N', 'S', 'U'],
+  ['E', 'H', 'R', 'T', 'V', 'W'],
+  ['E', 'I', 'O', 'S', 'S', 'T'],
+  ['E', 'L', 'R', 'T', 'T', 'Y'],
+  ['H', 'I', 'M', 'N', 'U', 'QU'],
+  // ['QU', 'QU', 'QU', 'QU', 'QU', 'QU'],
+  ['H', 'L', 'N', 'N', 'R', 'Z'],
+];
+
+const randomIntegerInRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+const randomCapCubeLetter = (cubeIndex) => {
+  const cubeSide = randomIntegerInRange(0, 5);
+  return cubeDefinitions[cubeIndex][cubeSide];
+};
 
 /**
  * A small utility function to determine whether a value is a single letter. Used to test for matrix validity.
@@ -30,6 +59,8 @@ const randomCapLetter = () => String.fromCharCode(Math.floor(Math.random() * (AS
  * @returns {boolean} true if the value is a single letter (upper or lower case)
  */
 const isSingleLetter = (value) => (/^[A-Za-z]$/m.test(value));
+
+const isSingleLetterOrQu = (value) => isSingleLetter(value) || value.toUpperCase() === 'QU';
 
 /**
  * Class representing a Boggle matrix with methods to solve it
@@ -51,20 +82,26 @@ class BoggleMatrix {
         throw new Error('If you pass a matrix to the BoggleMatrix constructor, it must be a valid matrix.');
       }
     } else {
-      this.shake();
+      this.shake(false);
     }
   }
 
   /**
    * Creates a new randomized matrix.
+   * @param {boolean} purelyRandom - if true, we generate completely random letters - if false, we use cube definitions
    * @see {@link MATRIX_MAX}
    */
-  shake() {
+  shake(purelyRandom = false) {
     this.matrix = [];
     for (let rowIndex = 0; rowIndex < BoggleMatrix.SIZE.ROWS; rowIndex++) {
       const row = [];
       for (let colIndex = 0; colIndex < BoggleMatrix.SIZE.COLUMNS; colIndex++) {
-        row.push(randomCapLetter());
+        const cubeIndex = rowIndex * 4 + colIndex;
+        if (purelyRandom) {
+          row.push(randomCapLetter());
+        } else {
+          row.push(randomCapCubeLetter(cubeIndex));
+        }
       }
       this.matrix.push(row);
     }
@@ -131,7 +168,8 @@ class BoggleMatrix {
       matrix.forEach((row) => {
         const rowIsArray = Array.isArray(row);
         if (rowIsArray) {
-          const letters = row.filter((element) => isSingleLetter(element));
+          // const letters = row.filter((element) => isSingleLetter(element));
+          const letters = row.filter((element) => isSingleLetterOrQu(element));
           matrixIsValid = matrixIsValid && letters.length === BoggleMatrix.SIZE.COLUMNS;
         } else {
           matrixIsValid = false;
@@ -161,16 +199,20 @@ class BoggleMatrix {
     const visitedCells = Array(rowCount).fill().map(() => Array(colCount).fill(false));
     const words = [];
 
+    // const runningWordList = [];
+    let paredList = this.dictionary;
+
     /**
      * This function is nested inside getSolutions so we can call it recursively, but easily keep
      * track of words found and cells visited, so far.  We start at rowIndex, colIndex and look at
      * all adjacent cells for potential words
      * @param {number} rowIndex - the starting row index
      * @param {number} colIndex - the starting column index
+     * @param {Set<string>} progressiveWordList - the progressively-smaller set of words for us to search
      * @param {string} segment - the letters accumulated so far by following a string of adjacent cells
      * @see {@link getSolutions} for thoughts about optimization
      */
-    const searchFromPosition = (rowIndex, colIndex, segment = '') => {
+    const searchFromPosition = (rowIndex, colIndex, progressiveWordList, segment = '') => {
       if (BoggleMatrix.indicesInRange(rowIndex, colIndex) && !visitedCells[rowIndex][colIndex]) {
         const letter = this.getLetter(rowIndex, colIndex);
         const candidate = `${segment}${letter}`;
@@ -179,31 +221,34 @@ class BoggleMatrix {
         // I do this length check as a point of optimization. It is not strictly needed, as no
         // 2-character words will ever be found.  But, it should provide a speed benefit, since
         // each of these Set.has() calls is fairly expensive.
-        if (candidate.length >= 3 && this.dictionary.has(candidate)) {
+        if (candidate.length >= minWordLength && paredList.has(candidate)) {
           words.push(candidate);
         }
 
-        // look horizontally and vertically
-        searchFromPosition(rowIndex - 1, colIndex, candidate);
-        searchFromPosition(rowIndex + 1, colIndex, candidate);
-        searchFromPosition(rowIndex, colIndex - 1, candidate);
-        searchFromPosition(rowIndex, colIndex + 1, candidate);
-        // look diagonally
-        searchFromPosition(rowIndex - 1, colIndex - 1, candidate);
-        searchFromPosition(rowIndex - 1, colIndex + 1, candidate);
-        searchFromPosition(rowIndex + 1, colIndex - 1, candidate);
-        searchFromPosition(rowIndex + 1, colIndex + 1, candidate);
+        if (paredList.size > 0) {
+          // look horizontally and vertically
+          searchFromPosition(rowIndex - 1, colIndex, paredList, candidate);
+          searchFromPosition(rowIndex + 1, colIndex, paredList, candidate);
+          searchFromPosition(rowIndex, colIndex - 1, paredList, candidate);
+          searchFromPosition(rowIndex, colIndex + 1, paredList, candidate);
+          // look diagonally
+          searchFromPosition(rowIndex - 1, colIndex - 1, paredList, candidate);
+          searchFromPosition(rowIndex - 1, colIndex + 1, paredList, candidate);
+          searchFromPosition(rowIndex + 1, colIndex - 1, paredList, candidate);
+          searchFromPosition(rowIndex + 1, colIndex + 1, paredList, candidate);
+        }
 
         visitedCells[rowIndex][colIndex] = false;
       }
     };
 
     if (Number.isInteger(onlyRowIndex) && Number.isInteger(onlyColIndex)) {
-      searchFromPosition(onlyRowIndex, onlyColIndex);
+      searchFromPosition(onlyRowIndex, onlyColIndex, paredList);
     } else {
       for (let row = 0; row < rowCount; row++) {
         for (let col = 0; col < colCount; col++) {
-          searchFromPosition(row, col);
+          paredList = this.dictionary;
+          searchFromPosition(row, col, paredList);
         }
       }
     }

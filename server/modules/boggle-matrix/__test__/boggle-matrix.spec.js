@@ -111,4 +111,11 @@ describe('Test solutions', () => {
       expect(solutionsSpecific.includes(word)).toBe(true);
     });
   });
+  // test('5x5 matrix does not blow up', () => {
+  //   expect(() => {
+  //     const bigBM = new BoggleMatrix(dictionary, setupData.bigMatrix);
+  //     const bigSolutions = bigBM.getSolutions();
+  //     console.log(bigSolution);
+  //   }).not.toThrow();
+  // });
 });

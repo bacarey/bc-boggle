@@ -19,14 +19,15 @@ const createDictionaryFromFile = (filePath) => {
 };
 
 const dictionary = createDictionaryFromFile(path.join(__dirname, 'big_word_list.txt'));
+// const dictionary = createDictionaryFromFile(path.join(__dirname, './modules/boggle-matrix/__test__/short_word_list.txt'));
 
 // This is the definition of a matrix that should be acceptable to the BoggleMatrix constructor
-// const goodMatrix = [
-//   ['t', 'w', 'y', 'r'],
-//   ['e', 'n', 'p', 'h'],
-//   ['g', 's', 'c', 'r'],
-//   ['o', 'n', 's', 'e'],
-// ];
+const goodMatrix = [
+  ['t', 'w', 'y', 'r'],
+  ['e', 'n', 'p', 'h'],
+  ['g', 's', 'c', 'r'],
+  ['o', 'n', 's', 'e'],
+];
 
 // This is the definition of a matrix that should be unacceptable to the BoggleMatrix constructor
 // const badMatrix = [
@@ -36,11 +37,20 @@ const dictionary = createDictionaryFromFile(path.join(__dirname, 'big_word_list.
 //   ['m', 'n', 'o', 'p'],
 // ];
 
+// const bigMatrix = [
+//   ['t', 'w', 'y', 'r', 'a'],
+//   ['e', 'n', 'p', 'h', 'b'],
+//   ['g', 's', 'c', 'r', 'c'],
+//   ['o', 'n', 's', 'e', 'd'],
+//   ['o', 'n', 's', 'e', 'd'],
+// ];
+
 const bm = new BoggleMatrix(dictionary);
 // const bm = new BoggleMatrix(dictionary, goodMatrix);
 // const bm = new BoggleMatrix(dictionary, badMatrix);
+// const bm = new BoggleMatrix(dictionary, bigMatrix);
 
-console.log(bm.matrix); // Shows the matrix that was randomly generated
+console.table(bm.matrix); // Shows the matrix that was randomly generated
 const solutions = bm.getSolutions();
 // const solutions = bm.getSolutions(2, 2);
 console.log(solutions); // The list of valid solutions
